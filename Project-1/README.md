@@ -9,7 +9,7 @@ For help check my repo  **Deploy-Website-on-VM/Simple-Javascript-website/README.
 
 ## 2. Update server packages on Ubuntu
 ```bash
-sudo apt-get Update
+sudo apt Update
 ```
 ## 3. Clone my git repo and go to the correct folder
 ```bash
@@ -24,8 +24,7 @@ sudo apt install docker.io -y
 * **Install java first**
 Jenkins requires Java to run, yet not all Linux distributions include Java by default. Additionally, not all Java versions are compatible with Jenkins. 
 ```bash
-sudo apt update
-sudo apt install fontconfig openjdk-17-jre
+sudo apt install openjdk-17-jre 
 ```
 **check its install or not**
 ```bash
@@ -33,18 +32,18 @@ java -version
 ```
 * **Install jenkins**
 ```bash
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
+
 sudo apt-get update
+
 sudo apt-get install jenkins
 ```
-## start jenkins 
+## check jenkins status it is running..
 ```bash
-sudo systemctl start jenkins.service
-
 sudo systemctl status jenkins
 ```
 ## 5. Giving permission of docker group to Ubuntu and jenkins user 
@@ -66,8 +65,8 @@ sudo apt-get install docker-compose -y
 * set up credentials of dockerhub in jenkins to login during pipeline process.
   
 ## 7.set up jenkins and start a pipeline project
-create a job -> select pipeline ->set github project [url : https://github.com/MohanPiru/devops-projects/tree/master/Project-1 ] -> check ( GitHub hook trigger for GITScm polling ) -> paste the "pipeline-script" file content from my repo -> save it 
-## pipeline-script 
+create a job -> select pipeline ->set github project [url : https://github.com/MohanPiru/devops-projects/ ] -> check ( GitHub hook trigger for GITScm polling ) -> paste the "jenkinsfile" file content from my repo -> save it 
+## jenkinsfile 
 ```bash
 pipeline {
     agent any
@@ -76,22 +75,26 @@ pipeline {
             steps{
             echo "getting the code from git repo"
             git url:"https://github.com/MohanPiru/devops-projects.git" , branch: "master"
-            sh "cd devops-projects/Project-1/"
+            
             }
         }
         stage("Build"){
             steps{
             echo "Building the image using docker"
+            dir('Project-1') {
             sh "docker build -t my-note-app . "
+            }
             }
         }
         stage("Push"){
             steps {
             echo "Pushing the code to docker hub"
+            dir('Project-1') {
             withCredentials([usernamePassword(credentialsId: "Piru02" , passwordVariable: "P" , usernameVariable: "U")])
             {sh "docker tag my-note-app ${env.U}/my-note-app:latest"
             sh "docker login -u ${env.U} -p ${env.P}"
             sh "docker push ${env.U}/my-note-app:latest"
+            }
             }
             
             }
@@ -99,7 +102,9 @@ pipeline {
         stage("Deploy"){
             steps{
             echo "deploy to the container"
+            dir('Project-1') {
             sh "docker-compose down && docker-compose up -d"
+            }
             }
         }
     }
