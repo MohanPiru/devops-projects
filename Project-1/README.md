@@ -17,11 +17,11 @@ sudo apt Update
 git clone https://github.com/MohanPiru/devops-projects.git
 cd devops-projects/Project-1/
 ```
-## 3. Install Docker
+## 4. Install Docker
 ```bash
 sudo apt install docker.io -y
 ```
-## 4. Install Jenkins 
+## 5. Install Jenkins 
 * **Install java first**
 Jenkins requires Java to run, yet not all Linux distributions include Java by default. Additionally, not all Java versions are compatible with Jenkins. 
 ```bash
@@ -47,7 +47,7 @@ sudo apt-get install jenkins
 ```bash
 sudo systemctl status jenkins
 ```
-## 5. Giving permission of docker group to Ubuntu and jenkins user 
+## 6.Giving permission of docker group to Ubuntu and jenkins user 
    By default they cannot use docker 
    after changing permission you have to reboot the server to apply changes.
 ```bash
@@ -55,19 +55,19 @@ sudo usermod -aG docker $USER
 sudo usermod -aG docker jenkins
 sudo reboot
 ```
-## download docker-compose
+## 7.Download docker-compose
 Docker Compose is a tool that helps you define and share multi-container applications. With Compose, you can create a YAML file to define the services and with a single command, you can spin everything up or tear it all down.
 ```bash
 sudo apt-get install docker-compose -y
 ```
-## 6.configure some set up
-* app will be running on port 8000 and jenkins on 8080 , so add inbound rule for port 8080 and 8000 in security group of your aws ubuntu server.
-* create a dockerhub account
+## 8.Configure some set up
+* app will be running on port 8000 and jenkins on 8080 , so add **inbound rule** for port 8080 and 8000 in security group of your aws ubuntu server.
+* create a **dockerhub** account
 * set up credentials of dockerhub in jenkins to login during pipeline process.
   <img width="876" alt="dockerhub cred" src="https://github.com/MohanPiru/devops-projects/assets/140044323/1e2649c1-0838-4ce1-b6f9-9ab233612f99">
 
   
-## 7.set up jenkins and start a pipeline project
+## 9.Set up jenkins and start a pipeline project
 create a job -> select pipeline ->set github project [url : https://github.com/MohanPiru/devops-projects/ ] -> check ( GitHub hook trigger for GITScm polling ) -> paste the "jenkinsfile" file content from my repo -> save it 
 ## jenkinsfile 
 ```bash
@@ -113,6 +113,6 @@ pipeline {
     }
 }
 ```
-## 8. Build now
+## 10. Build now
 click on build now and you will see your app will be running on port 8000
 <img width="657" alt="pipeline1" src="https://github.com/MohanPiru/devops-projects/assets/140044323/7ec92c97-0a5c-48c6-b610-dead23b2c62e">
