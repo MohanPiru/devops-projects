@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    stages{
+        stage("code"){
+            steps{
+            echo "getting the code from git repo"
+            git url:"https://github.com/MohanPiru/devops-projects.git" , branch: "master"
+            
+            }
+        }
+        stage("Build"){
+            steps{
+            echo "Building the image using docker"
+            dir('Project-1') {
+            sh "docker build -t my-note-app . "
+            }
+            }
+        }
+        stage("Push"){
+            steps {
+            echo "Pushing the code to docker hub"
+            dir('Project-1') {
+            withCredentials([usernamePassword(credentialsId: "Piru02" , passwordVariable: "P" , usernameVariable: "U")])
+            {sh "docker tag my-note-app ${env.U}/my-note-app:latest"
+            sh "docker login -u ${env.U} -p ${env.P}"
+            sh "docker push ${env.U}/my-note-app:latest"
+            }
+            }
+            
+            }
+        }
+        stage("Deploy"){
+            steps{
+            echo "deploy to the container"
+            dir('Project-1') {
+            sh "docker-compose down && docker-compose up -d"
+            }
+            }
+        }
+    }
+}
