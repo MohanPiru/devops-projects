@@ -11,6 +11,7 @@ For help check my repo  **Deploy-Website-on-VM/Simple-Javascript-website/README.
 ```bash
 sudo apt Update
 ```
+**step 3 is optional [if you want to run the app in container manually you can by clonning repo]**
 ## 3. Clone my git repo and go to the correct folder
 ```bash
 git clone https://github.com/MohanPiru/devops-projects.git
@@ -42,7 +43,7 @@ sudo apt-get update
 
 sudo apt-get install jenkins
 ```
-## check jenkins status it is running..
+## check jenkins status, it is running..
 ```bash
 sudo systemctl status jenkins
 ```
@@ -63,6 +64,8 @@ sudo apt-get install docker-compose -y
 * app will be running on port 8000 and jenkins on 8080 , so add inbound rule for port 8080 and 8000 in security group of your aws ubuntu server.
 * create a dockerhub account
 * set up credentials of dockerhub in jenkins to login during pipeline process.
+  <img width="876" alt="dockerhub cred" src="https://github.com/MohanPiru/devops-projects/assets/140044323/1e2649c1-0838-4ce1-b6f9-9ab233612f99">
+
   
 ## 7.set up jenkins and start a pipeline project
 create a job -> select pipeline ->set github project [url : https://github.com/MohanPiru/devops-projects/ ] -> check ( GitHub hook trigger for GITScm polling ) -> paste the "jenkinsfile" file content from my repo -> save it 
@@ -112,3 +115,4 @@ pipeline {
 ```
 ## 8. Build now
 click on build now and you will see your app will be running on port 8000
+<img width="657" alt="pipeline1" src="https://github.com/MohanPiru/devops-projects/assets/140044323/7ec92c97-0a5c-48c6-b610-dead23b2c62e">
