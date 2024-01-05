@@ -27,6 +27,10 @@ Jenkins requires Java to run, yet not all Linux distributions include Java by de
 sudo apt update
 sudo apt install fontconfig openjdk-17-jre
 ```
+**check its install or not**
+```bash
+java -version
+```
 * **Install jenkins**
 ```bash
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
@@ -37,6 +41,12 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
 sudo apt-get update
 sudo apt-get install jenkins
 ```
+## start jenkins 
+```bash
+sudo systemctl start jenkins.service
+
+sudo systemctl status jenkins
+```
 ## 5. Giving permission of docker group to Ubuntu and jenkins user 
    By default they cannot use docker 
    after changing permission you have to reboot the server to apply changes.
@@ -45,13 +55,55 @@ sudo usermod -aG docker $USER
 sudo usermod -aG docker jenkins
 sudo reboot
 ```
-## configure some set up
+## download docker-compose
+Docker Compose is a tool that helps you define and share multi-container applications. With Compose, you can create a YAML file to define the services and with a single command, you can spin everything up or tear it all down.
+```bash
+sudo apt-get install docker-compose -y
+```
+## 6.configure some set up
 * app will be running on port 8000 and jenkins on 8080 , so add inbound rule for port 8080 and 8000 in security group of your aws ubuntu server.
 * create a dockerhub account
 * set up credentials of dockerhub in jenkins to login during pipeline process.
   
-## set up jenkins and start a pipeline project
+## 7.set up jenkins and start a pipeline project
 create a job -> select pipeline ->set github project [url : https://github.com/MohanPiru/devops-projects/tree/master/Project-1 ] -> check ( GitHub hook trigger for GITScm polling ) -> paste the "pipeline-script" file content from my repo -> save it 
-
-## Build now
+## pipeline-script 
+```bash
+pipeline {
+    agent any
+    stages{
+        stage("code"){
+            steps{
+            echo "getting the code from git repo"
+            git url:"https://github.com/MohanPiru/devops-projects.git" , branch: "master"
+            sh "cd devops-projects/Project-1/"
+            }
+        }
+        stage("Build"){
+            steps{
+            echo "Building the image using docker"
+            sh "docker build -t my-note-app . "
+            }
+        }
+        stage("Push"){
+            steps {
+            echo "Pushing the code to docker hub"
+            withCredentials([usernamePassword(credentialsId: "Piru02" , passwordVariable: "P" , usernameVariable: "U")])
+            {sh "docker tag my-note-app ${env.U}/my-note-app:latest"
+            sh "docker login -u ${env.U} -p ${env.P}"
+            sh "docker push ${env.U}/my-note-app:latest"
+            }
+            
+            }
+        }
+        stage("Deploy"){
+            steps{
+            echo "deploy to the container"
+            sh "docker-compose down && docker-compose up -d"
+            }
+        }
+    }
+}
+```
+## 8. Build now
 click on build now and you will see your app will be running on port 8000
