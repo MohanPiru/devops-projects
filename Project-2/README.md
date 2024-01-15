@@ -1,5 +1,10 @@
 
 # Realtime CI/Cd Project
+<img width="978" alt="Project-2" src="https://github.com/MohanPiru/devops-projects/assets/140044323/ce31d771-4aa2-43f7-b575-ddec9eb2d8ed">
+
+**Here I am using 3 servers to implement this project**
+
+<img width="661" alt="servers-project-2" src="https://github.com/MohanPiru/devops-projects/assets/140044323/d2c4584f-7993-4fcd-8f21-9b52cafca056">
 
 
 ## 1. Setup server1
@@ -25,12 +30,13 @@ sudo apt-get update
 sudo apt-get install jenkins
 ```
 Now you can access the jenkins Server on ```http://<ip-address>:8080```
-**Install maven**
+
+* **Install maven**
 ```bash
 sudo apt-get install maven
 ```
 ## 2. Setup server 2 
-**Install Sonarqube**
+* **Install Sonarqube**
 ```bash
 sudo apt-get Update
 sudo apt-get install openjdk-17-jre 
@@ -43,6 +49,7 @@ cd sonarqube-9.4.0.54424/bin/linux-x86-64/
 Now you can access the SonarQube Server on ``` http://<ip-address>:9000 ```
 
 ## 3. Setup server 3
+Here I am using minikube kubernetes cluster (although it is not used in product environment)
 * **Install minikube**
 ```bash
 sudo apt-get update
