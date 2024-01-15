@@ -1,7 +1,5 @@
 FROM tomcat:8.0-alpine
-LABEL maintainer="satheeskumar.pmp@gmail.com"
-
-ADD target/*.war /usr/local/tomcat/webapps/
+ADD target/*.war /usr/local/tomcat/webapps/app.war
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
