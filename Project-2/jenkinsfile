@@ -1,0 +1,56 @@
+pipeline{
+    agent any
+    environment {
+        PATH = "$PATH:/usr/share/maven/bin"
+    }
+    stages{
+       stage('GetCode'){
+            steps{
+                git url:"https://github.com/MohanPiru/devops-projects.git" , branch: "master"
+                sh 'cd Project-2/'
+                sh 'ls'
+            }
+         }        
+       stage('Build'){
+            steps{
+                dir('Project-2'){
+                sh 'mvn clean package'
+                }
+            }
+         }
+          stage("Building"){
+            steps{
+            echo "Building the image using docker"
+            dir('Project-2') {
+            sh "docker build -t hello-war . "
+            }
+            }
+        }
+     stage("Push"){
+            steps {
+            echo "Pushing the code to docker hub"
+            dir('Project-2') {
+            withCredentials([usernamePassword(credentialsId: "Piru02" , passwordVariable: "P" , usernameVariable: "U")])
+            {sh "docker tag hello-war ${env.U}/hello-war:latest"
+            sh "docker login -u ${env.U} -p ${env.P}"
+            sh "docker push ${env.U}/hello-war:latest"
+            }
+            }
+            
+            }
+        }
+        stage('SonarQube analysis') {
+     //  def scannerHome = tool 'sonar-scanner';
+     
+        steps{
+        withSonarQubeEnv('sonarqube-9.4') { 
+        // If you have configured more than one global server connection, you can specify its name
+    //    sh "${scannerHome}/bin/sonar-scanner"
+       // sh "mvn sonar:sonar"
+       sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=demo-project"
+        }
+        }
+        }
+       
+    }
+}
