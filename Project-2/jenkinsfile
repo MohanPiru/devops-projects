@@ -7,52 +7,50 @@ pipeline{
        stage('GetCode'){
             steps{
                 git url:"https://github.com/MohanPiru/devops-projects.git" , branch: "master"
-                sh 'cd Project-2/'
-                sh 'ls'
-            }
-         }        
-       stage('Build'){
+                sh 'cd Project-2/ && ls'
+                }
+                }     
+
+//
+
+     stage('maven Build'){
             steps{
                 dir('Project-2'){
                 sh 'mvn clean package'
                 }
-            }
-         }
-          stage("Building"){
-            steps{
-            echo "Building the image using docker"
-            dir('Project-2') {
-            sh "docker build -t hello-war . "
-            }
-            }
+                }
+                }
+
+//
+
+        stage('Static Code Analysis') {
+      environment {
+        SONAR_URL = "<http://34.201.116.83:9000>"
+           //change it according to yours
+      }
+      steps {
+        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
         }
-     stage("Push"){
+        }
+        }
+
+//
+
+     stage("Build and Push"){
             steps {
-            echo "Pushing the code to docker hub"
+            echo "building the image and Pushing the code to docker hub"
             dir('Project-2') {
             withCredentials([usernamePassword(credentialsId: "Piru02" , passwordVariable: "P" , usernameVariable: "U")])
-            {sh "docker tag hello-war ${env.U}/hello-war:latest"
-            sh "docker login -u ${env.U} -p ${env.P}"
-            sh "docker push ${env.U}/hello-war:latest"
+        {    sh "docker build -t ${env.U}/realtime-cicd:${BUILD_NUMBER} . "
+             sh "docker login -u ${env.U} -p ${env.P}"
+             sh "docker push ${env.U}/realtime-cicd:${BUILD_NUMBER}"
             }
             }
-            
             }
-        }
+            }
 
-
-        stage('SonarQube analysis') {
-     //  def scannerHome = tool 'sonar-scanner';
-     
-        steps{
-        withSonarQubeEnv('sonarqube-9.4') { 
-        // If you have configured more than one global server connection, you can specify its name
-    //    sh "${scannerHome}/bin/sonar-scanner"
-       // sh "mvn sonar:sonar"
-       sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=demo-project"
-        }
-        }
-        }
+// after this you can run the docker image(create container) and see your application.
 
 
      stage('Update Deployment File') {
@@ -63,7 +61,7 @@ pipeline{
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
-                    git config user.email "pirumohan2002@gmail.com"
+                    git config user.email "abc2233@gmail.com"
                     git config user.name "Pirumohan Mandal"
                     BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-2/k8s-manifests/deployment.yml
