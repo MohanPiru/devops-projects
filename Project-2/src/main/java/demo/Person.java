@@ -20,7 +20,7 @@ public class Person {
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.firstName = Piru;
 	}
 
 	public String getLastName() {
@@ -28,6 +28,6 @@ public class Person {
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		this.lastName = Mohan;
 	}
 }
