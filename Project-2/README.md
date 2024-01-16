@@ -62,7 +62,7 @@ minikube start
 ```
 you can see cluster is running
 ```bash 
-kubectl get pods -Add
+kubectl get pods -A
 ```
 * **Install argocd using operators**
 ```bash
@@ -77,7 +77,7 @@ create a file 'argocd-basic.yml' and put the following inside it
 apiVersion: argoproj.io/v1alpha1
 kind: ArgoCD
 metadata:
-  name: example-argocd
+  name: argocd
   labels:
     example: basic
 spec: {}
@@ -87,11 +87,11 @@ run
 kubectl apply -f argocd-basic.yml
 ```
 
-chnage the service type of argocd from 'ClusterIp' to 'NodePort' to access that on your browser
+change the service type of argocd from 'ClusterIp' to 'NodePort' to access that on your browser
 
 ```bash 
 kubectl get svc
-kubectl edit svc <example-arocd-server>
+kubectl edit svc <argocd-server>
 ```
 after argocd pods are up and running.
 
