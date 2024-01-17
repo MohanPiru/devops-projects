@@ -8,12 +8,12 @@
 
 
 ## 1. Setup server1
-**Install docker**
+* **Install docker**
 ```bash
 sudo apt-get Update
 sudo apt-get install docker.io -y
 ```
-**Install jenkins**
+* **Install jenkins**
  
  it needs java
 ```bash
@@ -67,7 +67,7 @@ kubectl get pods -A
 * **Install kubectl**
  ```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
+#download checksum
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
 
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -142,6 +142,7 @@ username is 'admin' and get the password running the following
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
 Before Installing Prometheus and Grafana using helm we have to install helm first (From Script)
+* **Install Helm**
 ```bash
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 
@@ -156,8 +157,7 @@ helm repo update
 
 helm install prometheus prometheus-community/prometheus
 ```
-### Expose Prometheus Service
-
+Expose Prometheus Service
 This is required to access prometheus-server using your browser.
 
 ```bash 
