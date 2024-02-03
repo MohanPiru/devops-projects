@@ -1,5 +1,7 @@
-FROM tomcat:8.0-alpine
-ADD target/*.war /usr/local/tomcat/webapps/app.war
+FROM openjdk:11
+
+COPY target/*.jar app.jar
 
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
