@@ -193,10 +193,12 @@ after generating secret token on sonarqube and access token on github...
 * **change environmental variables of jenkinsfile acording to yours**
 
 
-## 5. Build the pipeline 
-  Hurray! The docker image is pushed to dockerhub
-It will clone the repo, build the jar file using maven, build the docker image from docker file, push it to dockerhub and also modify the docker image with tage to k8s manifests files (deployment.yml)
+## 5. Build the pipeline   
+*It will clone the repo->  build the jar file using maven->  build the docker image from docker file->  push it to dockerhub and also modify the docker image with tage to k8s manifests files (deployment.yml)*
+
 
 ## create a new app with argocd providng the github url and path of the yml manifests it will automatically deploy the application
 **Argocd will take github as a single source of truth**
 <img width="945" alt="argocd-nodejs-website" src="https://github.com/MohanPiru/devops-projects/assets/140044323/08d95073-e0cc-4826-8c46-a038d657b010">
+
+**Hurray! we have deployed our application**
