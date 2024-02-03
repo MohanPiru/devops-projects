@@ -195,6 +195,7 @@ after generating secret token on sonarqube and access token on github...
 
 ## 5. Build the pipeline 
   Hurray! The docker image is pushed to dockerhub
+It will clone the repo, build the jar file using maven, build the docker image from docker file, push it to dockerhub and also modify the docker image with tage to k8s manifests files (deployment.yml)
 
 ## create a new app with argocd providng the github url and path of the yml manifests it will automatically deploy the application
 **Argocd will take github as a single source of truth**
